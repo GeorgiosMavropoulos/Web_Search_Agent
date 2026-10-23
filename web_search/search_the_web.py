@@ -10,31 +10,20 @@ from typing import List
 
 class WebSearch:
     def __init__(self):
-        pass
-
-
+        self.wrapper = DuckDuckGoSearchAPIWrapper(
+                    region="us-en",                     # exclude wt-wt"
+                     backend="auto"
+                )
     #search the web function
     def web_search_query(self,query:str,max_results:int)-> List[str]:
         try:
-            #return links
-            return [r["link"] for r in DuckDuckGoSearchAPIWrapper().results(query,max_results)]
-                            #iterate through the results
-                       
-        
-        #return a special exception if search fails
-        except DuckDuckGoSearchException as e:
-            raise RuntimeError(f'Search error, please try again later') from e
+            #return links by iterating through the results
+            return [r["link"] for r in self.wrapper.results(query, max_results)]
 
-        #exception if search hits rate limit
-        except RatelimitException as e:
-             raise RuntimeError(f'Error, RateLimit hit the limits') from e
-
-        #timeout exception
-        except TimeoutException as e:
-            raise RuntimeError(f'Timeout error, please try again later') from e
-
-        #General catch-all goes at the absolute bottom
+       
         except Exception as e:
-          raise RuntimeError(f'An unexpected error occurred') from e
+            # catches DDGSException, rate limit, timeout
+            raise RuntimeError(f"Search failed for '{query}': {e}") from e
+
 
 
