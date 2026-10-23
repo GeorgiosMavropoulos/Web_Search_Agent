@@ -31,19 +31,19 @@ class WebScrap:
                 page_text = soup.get_text(' ',strip=True)
 
                 #return an error message if page does not contain text
-                if page_text is None:
-                    raise ValueError('This webpage does not contain readable text')
+                if not page_text.strip():
+                    raise ValueError('This webpage does not contain readable text') 
                 
                 return page_text
 
             #return an error message if response is not ok!
             else:
-                raise Exception(f'Scraping failed due to error: {response.status_code}')
+                raise RuntimeError(f'Scraping failed due to error: {response.status_code}')
 
         #return exceptions
         except AttributeError as e:
-            raise Exception(f'Error while editing content:{e}')
-        except ValueError as e:
-            raise Exception(f'Invalid url:{e}')
+            raise RuntimeError(f'Error while editing content') from e
+        except RuntimeError as e:
+            raise RuntimeError(f'Invalid url') from e
         except Exception as e:
-            raise Exception(f'Error, cannot fetch the text, please try again later.{e}')
+            raise RuntimeError(f'Error, cannot fetch the text, please try again later.') from e

@@ -22,19 +22,19 @@ class WebSearch:
                        
         
         #return a special exception if search fails
-        except (DuckDuckGoSearchException) as e:
-            raise Exception(f'Search error, please try again later:{e}')
+        except DuckDuckGoSearchException as e:
+            raise RuntimeError(f'Search error, please try again later') from e
 
         #exception if search hits rate limit
-        except (RatelimitException) as e:
-             raise Exception(f'Error, RateLimit hit the limits:{e}')
+        except RatelimitException as e:
+             raise RuntimeError(f'Error, RateLimit hit the limits') from e
 
         #timeout exception
-        except(TimeoutError) as e:
-            raise Exception(f'Timeout error, please try again later:{e}')
+        except TimeoutException as e:
+            raise RuntimeError(f'Timeout error, please try again later') from e
 
         #General catch-all goes at the absolute bottom
         except Exception as e:
-          raise Exception(f'An unexpected error occurred: {e}')
+          raise RuntimeError(f'An unexpected error occurred') from e
 
 
