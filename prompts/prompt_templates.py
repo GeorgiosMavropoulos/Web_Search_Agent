@@ -44,9 +44,6 @@ Example:
                             Summarize the following web page content in a clear,
                             accurate, and concise way.
 
-                            User question:
-                            {user_question}
-
                             Web page content:
                             {search_result_text}
 
