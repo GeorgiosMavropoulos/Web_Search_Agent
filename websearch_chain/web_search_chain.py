@@ -27,8 +27,9 @@ class WebSearchChain:
                             |StrOutputParser()| RunnableLambda(json.loads))
 
         #invoke the chain to call the llm and delegate the generated queries into a variable
-        query = web_search_query_chain.invoke(user_question)
-        return query
+        queries = web_search_query_chain.invoke(user_question)     
+        
+        return queries
 
     
       @staticmethod
@@ -43,11 +44,20 @@ class WebSearchChain:
                     print(e)  # continue to next query
          return list(dict.fromkeys(urls))
 
-      #call the methods
-query_results = WebSearchChain.generate_search_queries('Who is Michael Jordan?')
-print(query_results)
-urls = WebSearchChain.execute_web_search(query_results)
-print(urls)
+
+      #method to call generate queries and search the web for relevant urls
+      @staticmethod
+      def search(user_question: str):
+        queries = WebSearchChain.generate_search_queries(user_question)
+        urls = WebSearchChain.execute_web_search(queries)
+        return urls
+
+      #pass this method to runnable lambda in order to add it into scrapper chain
+      search_runnable = RunnableLambda(search)
+
+
+
+
 
 
            
