@@ -57,11 +57,6 @@ class WebScrapChain:
             return scrap_chain.invoke(user_question)
 
 
-text = WebScrapChain.scrap_texts("Who is Michael Jordan?")
-print("Final result:", text)
 
-
-text = WebScrapChain.scrap_texts('Who is Michale Jordan?')
-print(text)
 
 
