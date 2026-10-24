@@ -6,6 +6,7 @@ from duckduckgo_search.exceptions import (
     RatelimitException,
     TimeoutException,
 )
+
 from typing import List
 
 class WebSearch:
