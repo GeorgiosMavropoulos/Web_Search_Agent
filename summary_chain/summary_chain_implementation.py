@@ -24,14 +24,11 @@ class SummaryChain:
        #create the summary chain and add summary's prompt template
        summary_chain = (prompt_template.TEXT_SUMMARY_TEMPLATE|llm_client.get_llm()|StrOutputParser())
 
-       def debug(x):
-        print(type(x), str(x)[:300])
-        return x
-
+   
        #create the research_chain
        research_chain = (
             RunnableLambda(WebScrapChain.scrap_texts) #call runnable lambda from scrap texts 
-            | RunnableLambda(debug) 
+            
             | RunnableLambda(
                 lambda search_result_text: {
                     "search_result_text": "\n\n".join(search_result_text)
@@ -43,7 +40,8 @@ class SummaryChain:
        summary = research_chain.invoke(user_question)
        return summary
 
-summary = SummaryChain.generate_summary('Who is Michael Jordan?')
-print(summary)
-                                   
+    @staticmethod
+    def summary_runnable() -> RunnableLambda:
+        """Runnable: user_question (str) -> summary (str)."""
+        return RunnableLambda(SummaryChain.generate_summary)          
                                    
