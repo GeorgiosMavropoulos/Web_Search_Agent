@@ -27,4 +27,5 @@ class TranslatorChain:
       return translate_chain.invoke(user_question)
 
 translate = TranslatorChain()
-translate.translate('Who is Michale Jordan?')
+translation = translate.translate('Who is Michale Jordan?')
+print(translation)
