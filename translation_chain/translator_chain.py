@@ -26,6 +26,9 @@ class TranslatorChain:
     )
       return translate_chain.invoke(user_question)
 
-translate = TranslatorChain()
-translation = translate.translate('Who is Michale Jordan?')
-print(translation)
+
+    #translator runnable
+    @staticmethod
+    def translator_runnable() -> RunnableLambda:
+            """Runnable: user_question (str) -> summary from summary runnable (str), translation (str)."""
+            return RunnableLambda(TranslatorChain.translate) 
