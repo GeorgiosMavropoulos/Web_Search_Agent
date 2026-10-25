@@ -107,3 +107,4 @@ Example:
 
                         Return the results in clearly labeled sections.
                         """
+    JUDGE_TEMPLATE = PromptTemplate.from_template(template=JUDGE_INSTRUCTION)
