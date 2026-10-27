@@ -11,25 +11,34 @@ class TranslatorChain:
     def __init__(self):
         pass
 
-    #function to translate
-    def translate(self,user_question: str):
-      #call summary runnable to run the summary
-      summary_runnable = SummaryChain.summary_runnable()
+    #function to translate the text
+    def translate(self, user_question: str):
 
-      #pass summary runnable to the chain 
-      translate_chain = RunnableParallel({
-            # store summary to transfer it to the judge
-            "summarized_content": RunnablePassthrough(),
-            # produce the summary and store it to the template with the translated text
-            "translated_texts": (
-                RunnableLambda(lambda summary: {"summarized_content": summary})
-                | prompt_template.TEXT_TRANSLATE_TEMPLATE
-                | llm_client.get_llm()
-                | StrOutputParser()
+        summary_runnable = SummaryChain.summary_runnable()
+
+        translate_chain = (
+            RunnableLambda(
+                lambda question: {
+                    "summarized_content": summary_runnable.invoke(question) #pass the generated summary to the chain
+                }
             )
-        })
-      translation = translate_chain.invoke(user_question)
-      return translation
+            | RunnableParallel({
+                "summarized_content": RunnableLambda(
+                    lambda x: x["summarized_content"]
+                ),
+                "translated_texts": (
+                    prompt_template.TEXT_TRANSLATE_TEMPLATE
+                    | llm_client.get_llm()
+                    | StrOutputParser()
+                )
+            })
+        )
+
+        translation = translate_chain.invoke(user_question)
+
+        print("Translation:\n", translation)
+
+        return translation
 
 
     #translator runnable

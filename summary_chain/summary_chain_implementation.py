@@ -38,6 +38,8 @@ class SummaryChain:
         )
 
        summary = research_chain.invoke(user_question)
+       print('Text summary: ')
+       print(summary)
        return summary
 
     @staticmethod

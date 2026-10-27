@@ -32,8 +32,6 @@ class JudgeChain:
 
         #return the scores
         scores = judge_chain.invoke(user_question)
+        print('Scores: ' + '\n',scores)
         return scores
 
-judge_instance = JudgeChain() 
-test = judge_instance.judge_text('Who is Jason Vorhees')
-print(test)

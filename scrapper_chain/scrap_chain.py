@@ -37,7 +37,7 @@ class WebScrapChain:
             raise RuntimeError(
                 "No text could be retrieved from the search results."
             )
-
+        
         return texts
 
     #function to get the retrieved URLs and scrap the web
@@ -53,6 +53,7 @@ class WebScrapChain:
 
             #create the chain
             scrap_chain = (search_runnable| scrap_runnable )
+            
             
             return scrap_chain.invoke(user_question)
 
