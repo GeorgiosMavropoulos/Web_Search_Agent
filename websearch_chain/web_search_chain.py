@@ -28,7 +28,7 @@ class WebSearchChain:
 
         #invoke the chain to call the llm and delegate the generated queries into a variable
         queries = web_search_query_chain.invoke(user_question)     
-        
+        print('Generated queries: ' + '\n',queries)
         return queries
 
     
@@ -50,6 +50,7 @@ class WebSearchChain:
       def search(user_question: str):
         queries = WebSearchChain.generate_search_queries(user_question)
         urls = WebSearchChain.execute_web_search(queries)
+        print('URLs found: ' + '\n',urls)
         return urls
 
       #pass this method to runnable lambda in order to add it into scrapper chain
