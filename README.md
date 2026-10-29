@@ -75,6 +75,9 @@ Connect the individual components into a single workflow using LangChain Express
 
 Each stage has a specific responsibility, making the application easier to understand, test, and extend.
 
+### 6. Streamlit Visualization
+Implemented a simple Streamlit WebPage with a chatbox to enable users interact with the agent.
+
 ## How It Works
 
 The application follows a sequential research pipeline.
