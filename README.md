@@ -426,7 +426,7 @@ Search results are not necessarily authoritative. Important findings should be c
 Once the basic pipeline is working, several improvements could be added.
 
 - **Source citations:** Include links to the pages used to generate the summary.
-- **Parallel processing:** Process multiple URLs concurrently where appropriate.
+- **Add Langgraph to connect nodes and edges:** Add Langgraph to replace LCEL with nodes and edges.
 - **Improved summarization:** Combine individual page summaries into a coherent research report.
 - **Language selection:** Support more target languages.
 - **Better error handling:** Handle inaccessible URLs, empty pages, and failed model requests.
@@ -460,6 +460,6 @@ This project can be released under the MIT License. If you choose this license, 
 
 ---
 
-**Status:** Learning project — under development.
+
 
 Built to explore LangChain Expression Language through a practical AI research workflow.
