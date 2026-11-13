@@ -1,6 +1,6 @@
 # AI Web Research & Translation Pipeline
 
-An AI-powered research tool built with Python and LangChain Expression Language (LCEL). It searches the web for relevant information, extracts text from web pages, summarizes the collected content, and translates the final summary into a language of your choice.
+An AI-powered research tool built with Python and LangChain Expression Language (LCEL). It searches the web for relevant information, extracts text from web pages, summarizes the collected content, translates the final summary and then another LLM judges the whole workflow.
 
 This project is designed as a hands-on learning project for understanding how to build modular AI workflows with LangChain and LCEL.
 
@@ -78,7 +78,12 @@ Each stage has a specific responsibility, making the application easier to under
 ### 6. Streamlit Visualization
 Implemented a simple Streamlit WebPage with a chatbox to enable users interact with the agent.
 
-## How It Works
+### 7. LLM as a judge
+Final another LLM is being called to judge the quality of the workflow.
+
+ 
+ 
+ ## How It Works
 
 The application follows a sequential research pipeline.
 
@@ -108,6 +113,10 @@ Translation
     |
     v
 Final Translated Summary
+    |
+    v
+Judgement
+
 ```
 
 ### Step 1: User Input
@@ -115,17 +124,6 @@ Final Translated Summary
 The user provides two inputs:
 
 - **Research question:** The topic or question to investigate.
-- **Target language:** The language in which the final summary should be returned.
-
-Example:
-
-```text
-Research question:
-What are the main benefits of renewable energy?
-
-Target language:
-Greek
-```
 
 ### Step 2: Web Search
 
@@ -149,20 +147,18 @@ For multiple sources, their summaries can be combined into a single research sum
 
 ### Step 5: Translation
 
-The final research summary is passed to a translation chain along with the target language.
+The previous research summary is passed to a translation chain along with the target language.
 
 The language model produces the translated result.
 
-### Step 6: Final Output
+### Step 6: LLM as a Judge
 
-The application returns the translated summary to the user.
-
-The intended result is a concise overview of the research topic without requiring the user to read every source in full.
+Another LLM is being called to judge the results. The LLM receives the initial question, the scraped text, the summary, the report and the translation.
 
 ## Technologies
 
 The project uses the following technologies and libraries.
-
+```
 | Technology | Purpose |
 |---|---|
 | Python | Main programming language |
@@ -170,49 +166,33 @@ The project uses the following technologies and libraries.
 | LCEL | Composing and connecting runnable components |
 | Language model API | Generating summaries and translations |
 | DuckDuckGo Search | Finding relevant web pages |
-| Trafilatura or Beautiful Soup | Extracting readable content from web pages |
+| Beautiful Soup | Extracting readable content from web pages |
 | python-dotenv | Loading environment variables from a `.env` file |
-
-The exact libraries and model provider may vary depending on the implementation.
+| streamlit | GUI visualization
+```
 
 ## Project Structure
 
-A possible project structure is:
-
-```text
-ai-web-research/
-│
-├── main.py
-│
-├── chains/
-│   ├── search_chain.py
-│   ├── summarization_chain.py
-│   └── translation_chain.py
-│
-├── tools/
-│   ├── web_search.py
-│   └── scraper.py
-│
-├── .env
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
-
 ### File Responsibilities
+```
+- app.py: Entry point that launches the Streamlit GUI to display all results.
+- inference.py: Main backend entry point implementing the inference class that runs the complete workflow.
+- llm/: Contains the LLM setup and safety checks.
+- prompts/: Stores the prompt templates used across the workflows.
+- llm_as_a_judge_chain/: Defines the LLM-as-a-judge evaluation chain.
+- scrapper_chain/: Defines the chain logic for scraping content.
+- summary_chain/: Defines the summarization chain.
+- translation_chain/: Defines the translation chain.
+- websearch_chain/: Defines the search-related chain logic.
+- web_scrap/: Contains the web page extraction functionality.
+-  web_search/: Contains the web search functionality.
+- utilities/: Contains helper modules, such as the parser to convert JSON objects to Python dictionaries.
+• pyproject.toml & requirements.txt: List the project configuration and Python dependencies.
+• .python-version: Specifies the Python version for the environment.
+• .gitignore: Specifies intentionally untracked files to ignore in Git.
+• README.md: Documents the project..
 
-- `main.py`: Entry point that runs the complete workflow.
-- `chains/search_chain.py`: Defines the search-related chain logic.
-- `chains/summarization_chain.py`: Defines the summarization prompt and chain.
-- `chains/translation_chain.py`: Defines the translation prompt and chain.
-- `tools/web_search.py`: Contains the web search functionality.
-- `tools/scraper.py`: Contains the web page extraction functionality.
-- `.env`: Stores API credentials and configuration values.
-- `requirements.txt`: Lists the Python dependencies.
-- `README.md`: Documents the project.
-
-This structure is a suggested starting point and can be adjusted as the project evolves.
-
+```
 ## Installation
 
 ### Prerequisites
@@ -227,11 +207,10 @@ Before running the project, make sure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-web-research.git
-cd ai-web-research
+git clone https://github.com/GeorgiosMavropoulos/Web_Search_Agent
+cd Web_Search_Agent
 ```
 
-Replace `YOUR_USERNAME` with your GitHub username and adjust the repository name if necessary.
 
 ### 2. Create a Virtual Environment
 
@@ -253,35 +232,25 @@ source .venv/bin/activate
 
 ### 3. Install Dependencies
 
-If you have already created a `requirements.txt` file:
+
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Otherwise, install the packages required by your implementation. For example:
 
-```bash
-pip install langchain langchain-core langchain-community
-pip install langchain-openai python-dotenv trafilatura
-pip install duckduckgo-search
-```
-
-Package requirements can differ depending on the search integration, scraper, and model provider you choose. Use the current package documentation to verify the appropriate dependencies.
 
 ### 4. Configure Environment Variables
 
 Create a `.env` file in the project root.
 
-For example, if you use an OpenAI-compatible LangChain integration:
+I used GEMINI:
 
 ```env
-OPENAI_API_KEY=your_api_key_here
+GEMINI_API_KEY=your_api_key_here
+GEMINI_MODEL= gemini-3.8-flash-lite
+
 ```
-
-Add other configuration variables if your implementation requires them.
-
-**Important:** Never commit API keys or other secrets to GitHub.
 
 ## Configuration
 
@@ -297,21 +266,17 @@ Possible configuration options include:
 | Summary length | The desired level of detail in the summary |
 | Model | The language model used for summarization and translation |
 
-For an initial version, keep the configuration simple. Additional settings can be introduced when the core pipeline works reliably.
 
 ## Usage
-
-The exact usage depends on how the entry point is implemented.
-
-Once the application is configured, the intended workflow is:
+From the main root:
+```streamlit run app.py```
 
 1. Start the application.
 2. Enter a research question.
-3. Specify the target language.
-4. Allow the search component to retrieve relevant URLs.
-5. Extract and summarize the content.
-6. Translate the final summary.
-7. Read the generated result.
+3. Allow the search component to retrieve relevant URLs.
+4. Extract and summarize the content.
+5. Translate the final summary.
+6. Read the generated result.
 
 For example, a completed run might look like this:
 
@@ -319,111 +284,19 @@ For example, a completed run might look like this:
 Research question:
 What are the best places to visit in Astorga, Spain?
 
-Target language:
-Greek
-
 Output:
-A Greek-language summary of the main attractions,
+A Greek/Italian/French language summary
 historical sites, and activities in Astorga.
 ```
 
-This is an example of the intended interaction, not a claim about an already implemented command-line interface.
 
 ## LCEL Concepts
 
 One of the main purposes of this project is to practice LangChain Expression Language.
 
-### Runnable Composition
 
-The pipe operator (`|`) connects components so that the output of one component becomes the input of the next.
-
-Conceptually:
-
-```python
-chain = component_a | component_b | component_c
-```
-
-This makes it possible to organize the workflow into smaller, reusable stages.
-
-### RunnableLambda
-
-`RunnableLambda` allows ordinary Python functions to be used as part of an LCEL pipeline.
-
-It is useful for operations such as processing search results, extracting values from dictionaries, or formatting data between chains.
-
-### RunnablePassthrough
-
-`RunnablePassthrough` passes its input through without changing it.
-
-It can be useful when the original research question or other input data must remain available to later stages.
-
-### RunnableParallel
-
-`RunnableParallel` runs multiple runnable components using the same input and collects their results into a dictionary.
-
-For example, it could be used to generate a summary and extract key points independently from the same source text.
-
-### Runnable `.map()`
-
-The `.map()` method applies a runnable to each item in a list of inputs.
-
-In this project, it can be useful for processing multiple URLs or summarizing several extracted documents.
-
-### StrOutputParser
-
-`StrOutputParser` converts a language model's message output into a plain string.
-
-This is useful when one chain needs to pass its generated text to another chain.
-
-### Invoke and Stream
-
-The project can use `.invoke()` to execute a chain and retrieve its result.
-
-The `.stream()` method can be explored later to process output incrementally when the selected runnable and model support streaming.
-
-## Error Handling and Limitations
-
-Web research pipelines depend on external services and websites, so some failures are expected.
-
-### Web Search Failures
-
-Search services may return no results, encounter rate limits, or change their response formats.
-
-The application should handle empty results gracefully.
-
-### Scraping Failures
-
-Some websites may block automated requests, require authentication, or load their content dynamically using JavaScript.
-
-Not every URL will produce usable text.
-
-### Long Documents
-
-Large web pages may exceed the model's context limits.
-
-Possible improvements include truncating content, splitting documents into smaller chunks, or summarizing chunks before combining them.
-
-### Inconsistent Outputs
-
-Different LCEL components may return strings, message objects, dictionaries, or lists.
-
-Each stage should have a clearly defined input and output format to prevent errors when connecting components.
-
-### Summary Accuracy
-
-Language models may omit details or generate inaccurate statements. Summaries should be treated as an aid to research rather than a substitute for the original sources.
-
-### Translation Quality
-
-Translations may not preserve every nuance of the original text, especially for technical terminology or culturally specific expressions.
-
-### Source Reliability
-
-Search results are not necessarily authoritative. Important findings should be checked against the original sources.
 
 ## Future Improvements
-
-Once the basic pipeline is working, several improvements could be added.
 
 - **Source citations:** Include links to the pages used to generate the summary.
 - **Add Langgraph to connect nodes and edges:** Add Langgraph to replace LCEL with nodes and edges.
@@ -436,7 +309,6 @@ Once the basic pipeline is working, several improvements could be added.
 - **User interface:** Add a simple command-line interface or web application.
 - **Evaluation:** Compare summaries and translations against the original source material.
 
-These improvements are optional and should be implemented incrementally.
 
 ## Learning Objectives
 
@@ -456,8 +328,7 @@ The focus is on understanding how the individual components work together rather
 
 ## License
 
-This project can be released under the MIT License. If you choose this license, add a `LICENSE` file containing the appropriate MIT License text.
-
+This project was released under the MIT licence.
 ---
 
 
