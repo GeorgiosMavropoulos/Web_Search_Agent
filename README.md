@@ -13,7 +13,6 @@ This project is designed as a hands-on learning project for understanding how to
 - [Technologies](#technologies)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
-- [Configuration](#configuration)
 - [Usage](#usage)
 - [LCEL Concepts](#lcel-concepts)
 - [Error Handling and Limitations](#error-handling-and-limitations)
@@ -252,19 +251,6 @@ GEMINI_MODEL= gemini-3.8-flash-lite
 
 ```
 
-## Configuration
-
-The application can be configured to control the research process.
-
-Possible configuration options include:
-
-| Setting | Description |
-|---|---|
-| Research question | The topic to investigate |
-| Maximum search results | The maximum number of URLs to retrieve |
-| Target language | The language used for the final translation |
-| Summary length | The desired level of detail in the summary |
-| Model | The language model used for summarization and translation |
 
 
 ## Usage
